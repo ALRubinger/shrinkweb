@@ -1,0 +1,52 @@
+= ShrinkWeb
+
+This project is a prototype for an Enterprise Java web framework.  Its goals:
+
+* API-first design.  Endpoints are to be first-class citizens, and understanding the application's client view should be possible at a glance.
+* Leverage existing communities.  Require no special plugins nor environments.
+* Blazing fast development cycle.  Write, deploy to server, see changes.
+
+Concretely, this should mean, for example:
+
+* Support a server SPI which allows usage in various runtimes.  For instance: Undertow, Vert.x, etc.  For the moment the prototype is built directly in Undertow.
+* Deployment without build, relying instead on incremental compilation offered by the IDE.
+* Built to be tested.  Tests will be executable from any development platform with JUnit integration, including Maven, Gradle, Eclipse IDE, IntelliJ IDEA, Netbeans, etc.  Test themselves are to execute on the server in a production-like environment and report results back to the original launcher.
+
+== Running the Prototype
+
+This prototype currently relies on an unreleased feature of the `ShrinkWrapClassLoader` in `upstream/master` of https://github.com/shrinkwrap/shrinkwrap.  Build locally on your machine and install into your local Maven repository by running `mvn clean install` using JDK8.
+
+From there, this code may be built in the same fashion: `mvn clean install`.
+
+There is a class `Test` in the `testsuite` module.  Run `main` there and you may then `curl` endpoints `/api/hello` and `/api/libdep`.
+
+== Structure of a ShrinkWeb Application
+
+Implement the `Endpoint` interface:
+```
+import org.jboss.shrinkwrap.shrinkweb.api.Endpoint;
+
+public class HelloEndpoint implements Endpoint {
+    @Override
+    public String getResponse() {
+        return "Cameo says Word Up";
+    }
+}
+```
+
+This code will be run when invoking the endpoint it's registered with.  Registration is based on where the Endpoint is added to the `ShrinkWebArchive`:
+
+```
+ShrinkWrap.create(ShrinkWebArchive.class,"webapp.jar")
+                .addEndpoint(HelloEndpoint.class,"/api/hello")
+```
+
+So in this case, calls to `/api/hello` will invoke the code in `HelloEndpoint`.
+
+All `Endpoint` classes added via `ShrinkWebArchive.addEndpoint` will be exposed.  The `.class` files end up in the archive under `WEB-INF/classes`.  Under the root of the `ShrinkWebArchive` lives the API definition as a tree of `StringAssets`: the location of the node is the endpoint address (ie. `/api/hello`), and the String at that location is the name of the class of the `Endpoint`.  Library dependencies in the archive under `WEB-INF/lib` are honored.  These may be put in place by calling `ShrinkWebArchive.addAsLibraries`.
+
+== Important TODOs coming up in the prototype
+
+* Support deployment of `ShrinkWebArchive` into a running server.  At the moment, it's all hardwired in the `main` `Test` class.
+* Make a proper `Endpoint` API which doesn't simply spit out a `String` in `text/plain`, but gives the user control over HTTP operations
+* Make CDI available to deployed archives

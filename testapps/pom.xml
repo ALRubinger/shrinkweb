@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+vi:ts=2:sw=2:expandtab:
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <!-- Parent -->
+    <parent>
+        <groupId>org.jboss.shrinkwrap</groupId>
+        <artifactId>shrinkweb-parent</artifactId>
+        <version>1.0.0-alpha-X-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <!-- Model Version -->
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Artifact Configuration -->
+    <artifactId>shrinkweb-testapps</artifactId>
+    <name>ShrinkWeb Test Applications</name>
+    <description>Test Applications for the ShrinkWeb Project</description>
+
+
+    <!-- Properties -->
+    <properties>
+
+        <!-- Versioning -->
+
+    </properties>
+
+    <!-- Dependencies -->
+    <dependencies>
+
+        <dependency>
+            <groupId>org.jboss.shrinkwrap</groupId>
+            <artifactId>shrinkweb-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- Used in testing endpoints with external library deps -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <version>1.2</version>
+        </dependency>
+
+    </dependencies>
+
+    <!-- Build Configuration -->
+    <build>
+        <plugins>
+
+            <!-- Checkstyle -->
+        </plugins>
+    </build>
+
+    <reporting>
+        <plugins>
+
+        </plugins>
+    </reporting>
+</project>
+

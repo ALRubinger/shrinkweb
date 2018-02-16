@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+vi:ts=2:sw=2:expandtab:
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <!-- Parent -->
+    <parent>
+        <groupId>org.jboss</groupId>
+        <artifactId>jboss-parent</artifactId>
+        <version>19</version>
+    </parent>
+
+    <!-- Model Information -->
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Artifact Information  -->
+    <groupId>org.jboss.shrinkwrap</groupId>
+    <artifactId>shrinkweb-parent</artifactId>
+    <version>1.0.0-alpha-X-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>ShrinkWeb Aggregator and Build Parent</name>
+    <description>ShrinkWeb Aggregator</description>
+
+    <!-- Properties -->
+    <properties>
+        <version.org.jboss.shrinkwrap_shrinkwrap>2.0.0-alpha-X-SNAPSHOT</version.org.jboss.shrinkwrap_shrinkwrap>
+        <version.org.jboss.shrinkwrap_resolver>3.1.2</version.org.jboss.shrinkwrap_resolver>
+        <version.junit_junit>4.8.2</version.junit_junit>
+    </properties>
+
+    <!-- SCM -->
+    <scm>
+        <connection>scm:git:git://github.com/alrubinger/shrinkweb.git</connection>
+        <developerConnection>scm:git:git@github.com:alrubinger/shrinkweb.git</developerConnection>
+        <url>https://github.com/alrubinger/shrinkweb</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <!-- Issues -->
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/alrubinger/shrinkweb/issues</url>
+    </issueManagement>
+
+    <!-- Licenses -->
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <!-- Plugin Configuration -->
+    <build>
+
+        <!-- Plugin Management -->
+        <pluginManagement>
+            <plugins>
+
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+
+            <!-- Compiler -->
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <inherited>true</inherited>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <showDeprecation>false</showDeprecation>
+                    <showWarnings>true</showWarnings>
+                    <optimize>true</optimize>
+                    <compilerVersion>1.8</compilerVersion>
+                    <fork>true</fork>
+                    <compilerArguments>
+                        <source>1.8</source>
+                        <target>1.8</target>
+                    </compilerArguments>
+                </configuration>
+            </plugin>
+
+            <!-- Surefire -->
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                    <trimStackTrace>false</trimStackTrace>
+                    <printSummary>true</printSummary>
+                    <includes>
+                        <include>**/*TestCase.java</include>
+                        <include>**/*TestSuite.java</include>
+                    </includes>
+                    <forkMode>always</forkMode>
+                    <jvm>${env.JAVA_HOME}/bin/java</jvm>
+                </configuration>
+            </plugin>
+
+            <!-- Enforce Maven Environment -->
+            <plugin>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>enforce-maven-environment</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <rules>
+                        <requireMavenVersion>
+                            <version>[2.2.0,)</version>
+                            <!--
+                              Must be more that 2.2 to support
+                              Assembly "includeModuleDirectory":
+                              http://maven.apache.org/plugins/maven-assembly-plugin/assembly.html
+                            -->
+                        </requireMavenVersion>
+                        <requireJavaVersion>
+                            <version>1.8.0</version> <!-- Must be JDK8 -->
+                        </requireJavaVersion>
+                        <requireProperty>
+                            <property>env.JAVA_HOME</property>
+                            <message>"JAVA_HOME needs to be set (to Java8)"</message>
+                        </requireProperty>
+                    </rules>
+                </configuration>
+            </plugin>
+        </plugins>
+
+    </build>
+
+    <!-- Dependency Management -->
+    <dependencyManagement>
+        <dependencies>
+
+            <dependency>
+                <groupId>org.jboss.shrinkwrap</groupId>
+                <artifactId>shrinkwrap-bom</artifactId>
+                <version>${version.org.jboss.shrinkwrap_shrinkwrap}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.shrinkwrap.resolver</groupId>
+                <artifactId>shrinkwrap-resolver-bom</artifactId>
+                <version>${version.org.jboss.shrinkwrap_resolver}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${version.junit_junit}</version>
+                <scope>test</scope>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- Aggregate Modules -->
+    <modules>
+        <module>api</module>
+        <module>impl</module>
+        <module>testapps</module>
+        <module>testsuite</module>
+    </modules>
+
+    <!-- Reporting -->
+    <reporting>
+    </reporting>
+
+    <repositories>
+        <repository>
+            <id>jboss-public-repository</id>
+            <name>JBoss Repository</name>
+            <url>https://repository.jboss.org/nexus/content/groups/public</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>jboss-deprecated-repository</id>
+            <name>JBoss Deprecated Maven Repository</name>
+            <url>https://repository.jboss.org/nexus/content/repositories/deprecated/</url>
+            <layout>default</layout>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>jboss-public-repository</id>
+            <name>JBoss Repository</name>
+            <url>https://repository.jboss.org/nexus/content/groups/public</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+
+</project>

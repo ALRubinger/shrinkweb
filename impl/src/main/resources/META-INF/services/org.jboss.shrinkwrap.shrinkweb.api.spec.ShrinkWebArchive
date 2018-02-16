@@ -1,0 +1,3 @@
+implementingClassName=org.jboss.shrinkwrap.shrinkweb.impl.spec.ShrinkWebArchiveImpl
+extension=.war
+archiveFormat=ZIP
